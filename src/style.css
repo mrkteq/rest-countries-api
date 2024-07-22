@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito+Sans:200,300,400,600,700,800,900&display=swap');
+
 *,
 *::before,
 *::after {
@@ -30,34 +32,56 @@ ol[role='list'] {
 }
 
 :root {
-  --clr-neutral-800: hsl(207deg 25% 17%);
-  --clr-neutral-600: hsl(210deg 21% 22%);
+  /* Light Mode Text */
+  --clr-black-800: hsl(200deg, 15%, 8%);
+  /* Dark Mode Background */
+  --clr-black-500:  hsl(207deg, 26%, 17%);
+  /* Dark Mode Elements */
+  --clr-black-300: hsl(209deg, 23%, 22%); 
+/* Light Mode Input */
+  --clr-white-800: hsl(0deg 0% 52%);
+  /* Light Mode Background */
+  --clr-white-500: hsl(0deg 0% 90%);
+  /* Dark Mode Text & Light Mode Elements */
+  --clr-white-300: hsl(0deg 0% 100%);
 
-  --clr-black-800: hsl(212deg 94% 2%);
-  --clr-black-500: hsl(132deg 1% 32%);
+  --ff-base: "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
-  --clr-white-800: hsl(0deg 0% 100%);
+  --fw-light: 300;
+  --fw-semi-bold: 600;
+  --fw-extra-bold: 800;
+
+  --fs-300: .875rem;
+  --fs-400: 1rem;
+  --fs-900: 2.5rem;
+}
+
+html {
+  font-size: 16px; /* 1 rem = 16px */
 }
 
 body {
-  background-color: var(--clr-neutral-800);
-  color: var(--clr-white-800);
+  background-color: var(--clr-black-500);
+  color: var(--clr-white-300);
+  font-family: var(--ff-base);
+  font-size: var(--fs-300);
+  font-weight: var(--fw-light);
 }
 
 .header {
   display: flex;
   justify-content: space-between;
-  background-color: var(--clr-neutral-600);
+  background-color: var(--clr-black-300);
 }
 
 .search {
-  background-color: var(--clr-neutral-600);
+  background-color: var(--clr-black-300);
 }
 
 .filter {
-  background-color: var(--clr-neutral-600);
+  background-color: var(--clr-black-300);
 }
 
 .card {
-  background-color: var(--clr-neutral-600);
+  background-color: var(--clr-black-300);
 }
