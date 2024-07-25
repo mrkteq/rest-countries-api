@@ -1,7 +1,7 @@
 <template>
-  <header class="header">
-    <h1 class="page-title">Where in the world?</h1>
-    <button @click="toggleTheme" class="theme-switch">
+  <header class="header-container">
+    <h1 class="title">Where in the world?</h1>
+    <button @click="toggleTheme" class="toggle">
       <i :class="iconClass"></i> {{ buttonText }}
     </button>
   </header>

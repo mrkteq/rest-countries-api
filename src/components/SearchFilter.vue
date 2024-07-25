@@ -1,9 +1,28 @@
 <template>
-   <div class="search-container">
+<div class="forms-container">
+	<div class="search">
+		<input type="search" :value="searchQuery" placeholder="Search for a country" @input="updateSearchQuery">
+		<i class="fas fa-search"></i>
+	</div>
+	<div class="filter">
+		<label for="filter-label">Filter by Region:</label>
+		<div class="filter-select">
+      <select :value="selectedRegion" @change="updateRegion">
+        <option value="">All Regions</option>
+        <option v-for="region in regions" :key="region" :value="region">
+          {{ region }}
+        </option>
+      </select>
+		</div>
+	</div>
+</div>
+
+
+   <!-- <div class="search-container">
     <input type="search" :value="searchQuery" placeholder="Search for a country" @input="updateSearchQuery">
     <i class="fas fa-search"></i>
-  </div>
-  <div class="custom-select-container">
+  </div> -->
+  <!-- <div class="custom-select-container">
     <label for="filter-region">Filter by Region:</label>
     <div class="custom-select filter-region">
       <select :value="selectedRegion" @change="updateRegion">
@@ -13,7 +32,7 @@
         </option>
       </select>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>

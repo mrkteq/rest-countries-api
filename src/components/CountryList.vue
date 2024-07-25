@@ -7,21 +7,19 @@
       @update:searchQuery="searchQuery = $event"
       @update:selectedRegion="selectedRegion = $event"
     />
-    <ul class="cards">
-      <li class="card" v-for="country in filteredCountries" :key="country.cca3">        
-        <router-link :to="{ name: 'CountryDetails', params: { code: country.cca3 } }" @click="selectCountry(country)">
-          <img :src="country.flags.png" :alt="country.name.common" class="country-flag">
+    <div class="card-container">
+      <div class="card" v-for="country in filteredCountries" :key="country.cca3">
+				<router-link :to="{ name: 'CountryDetails', params: { code: country.cca3 } }" @click="selectCountry(country)">
+          <img :src="country.flags.png" :alt="country.name.common" class="card-image">
         </router-link>
-        <header>
-          <h2>{{ country.name.common }}</h2>
-        </header>
-        <div class="content">
-          <p>Population: {{ country.population }}</p>
-          <p>Region: {{ country.region }}</p>
-          <p>Capital: {{ country.capital }}</p>
-        </div>
-      </li>
-    </ul>
+				<h2 class="card-title">{{ country.name.common }}</h2>
+				<ul class="card-content" role="list">
+						<li>Population: <span>{{ country.population }}</span></li>
+						<li>Region: <span>{{ country.region }}</span></li>
+						<li>Capital: <span>{{ country.capital }}</span></li>
+				</ul>
+      </div>
+    </div>
     <CountryDetails v-if="selectedCountry" :country="selectedCountry" @close="selectedCountry = null" />
   </div>
 </template>

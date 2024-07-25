@@ -65,7 +65,7 @@ ol[role='list'] {
 }
 
 html {
-  font-size: 16px; /* 1 rem = 16px */
+  font-size: 16px;
 }
 
 body {
@@ -76,33 +76,36 @@ body {
   font-weight: var(--fw-light);
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
+/* ================================
+header
+================================ */
+.header-container {
+  display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas: "title toggle";
+  padding: 2rem;
   background-color: var(--background-color-accent);
-  padding-inline-start: 20px;
-  padding-inline-end: 20px;
-  padding-block-end: 20px;
-  padding-block-start: 20px;
 }
 
-.page-title {
+.header-container .title {
+  grid-area: title;
+	align-self: center;
   font-size: var(--fs-400);
   color: var(--text-color);
 }
 
-/* ================================
-button
-================================ */
-.theme-switch {
+.header-container .toggle {
+  grid-area: toggle;
+	align-self: center;
+	justify-self: end;
   background-color: transparent;
   color: var(--text-color);
   font: inherit;
   border: none;
 }
 
-.theme-switch:hover,
-.theme-switch:focus-visible {
+.header-container .toggle:hover,
+.header-container .toggle:focus-visible {
   position: relative;
   cursor: pointer;
   background-color: transparent;
@@ -110,32 +113,32 @@ button
 }
 
 /* ================================
-search field
+search and filter
 ================================ */
-.search-container {
+.forms-container {
+  position: relative;
   display: grid;
+	gap: 2rem;
+	grid-template-columns: 1fr;
+	grid-template-areas: "search" "filter";
   margin-inline-start: 1rem;
   margin-inline-end: 1rem;
-  margin-block-start: 1.5rem;
-  margin-block-end: 1.5rem;
-  position: relative;
+  margin-block-start: 2rem;
+  margin-block-end: 2rem;
 }
 
-.search-container input[type="search"] {
+.forms-container .search {
+	grid-area: search;
+	align-self: center;
+	display: grid;
+}
+
+.forms-container input[type="search"] {
   background-color: var(--background-color-accent);
   border: none;
   padding: 1rem 1rem 1rem 2.5rem;
   border-radius: .1rem;
   font: inherit;
-  color: var(--text-color);
-  /* width: 90%; */
-}
-
-.fa-search {
-  position: absolute;
-  top: 50%;
-  left: 1rem;
-  transform: translateY(-50%);
   color: var(--text-color);
 }
 
@@ -149,25 +152,28 @@ input::placeholder {
   color: var(--text-color);
 }
 
-/* ================================
-filter
-================================ */
-.custom-select-container {
-  margin-inline-end: 10rem;
-  margin-inline-start: 1rem;
+.fa-search {
+  position: absolute;
+  left: 1rem;
+  transform: translateY(130%);
+  color: var(--text-color);
 }
 
-.custom-select-container label {
-  margin-inline-start: 1rem;
+.forms-container .filter {
+	grid-area: filter;
+	align-self: center;
+}
+
+.forms-container .filter label {
   display: none;
 }
 
-.custom-select.filter-region {
+.forms-container .filter-select {
   background-color: var(--background-color-accent);
   position: relative;
 }
 
-.custom-select.filter-region select {
+.forms-container .filter-select select {
   width: 100%;
   padding: 1rem;
   color: var(--text-color);
@@ -176,7 +182,7 @@ filter
   background-color: var(--background-color-accent);
 }
 
-.custom-select.filter-region::after {
+.forms-container .filter-select::after {
   content: '▿';
   color: var(--text-color);
   position: absolute;
@@ -189,47 +195,43 @@ filter
 /* ================================
 card
 ================================ */
-
-
-.cards {
+.card-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  grid-gap: 2rem;
-  padding-inline-start: 2.5rem;
-  padding-inline-end: 2.5rem;
-  margin-block-start: 1.5rem;
-  margin-block-end: 1.5rem;
+  grid-gap: 2.5rem;
+  padding-inline-start: 1rem;
+  padding-inline-end: 1rem;
+  margin-block-start: 2.5rem;
+  margin-block-end: 0;
 }
 
 .card {
-  display: grid;
-  grid-template-rows: 150px max-content 1fr;
   background-color: var(--background-color-accent);
-  padding-block-end: 1.5rem;
 }
 
-.card img {
+.card > a {
+  display: grid;
+}
+
+.card-image {
   object-fit: cover;
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: 150px;
+  justify-self: center;
+  display: grid;
 }
 
-.card header {
+.card-title {
   margin-inline-start: 1rem;
-}
-
-.card header h2 {
   margin-block-start: 1.5rem;
   margin-block-end: 1.5rem;
 }
 
-.card .content {
+.card-content li {
   font-weight: var(--fw-extra-bold);
-  display: grid;
-  gap: .5rem;
-  margin-inline-start: 1rem;
+  padding: .275rem 1rem;
 }
 
-.card .content span {
+.card-content li span {
   font-weight: var(--fw-light);
 }
