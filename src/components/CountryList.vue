@@ -1,10 +1,17 @@
 <template>
   <div>
+    <SearchFilter
+      :searchQuery="searchQuery"
+      :selectedRegion="selectedRegion"
+      :regions="regions"
+      @update:searchQuery="searchQuery = $event"
+      @update:selectedRegion="selectedRegion = $event"
+    />
     <ul class="cards">
-      <li class="card" v-for="country in countries" :key="country.cca3">
-        <a @click="selectCountry(country)">
+      <li class="card" v-for="country in filteredCountries" :key="country.cca3">        
+        <router-link :to="{ name: 'CountryDetails', params: { code: country.cca3 } }" @click="selectCountry(country)">
           <img :src="country.flags.png" :alt="country.name.common" class="country-flag">
-        </a>
+        </router-link>
         <header>
           <h2>{{ country.name.common }}</h2>
         </header>
@@ -15,25 +22,37 @@
         </div>
       </li>
     </ul>
-    <div v-if="selectedCountry">
-      <h2>{{ selectedCountry.name.common }}</h2>
-      <p>Capital: {{ selectedCountry.capital }}</p>
-      <p>Region: {{ selectedCountry.region }}</p>
-      <p>Population: {{ selectedCountry.population }}</p>
-      <!-- Add more details as needed -->
-    </div>
+    <CountryDetails v-if="selectedCountry" :country="selectedCountry" @close="selectedCountry = null" />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import SearchFilter from './SearchFilter.vue';
+import CountryDetails from './CountryDetails.vue';
 
 export default {
+  components: {
+    SearchFilter,
+    CountryDetails,
+  },
   data() {
     return {
       countries: [],
+      regions: ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania'],
+      searchQuery: '',
+      selectedRegion: '',
       selectedCountry: null,
     };
+  },
+  computed: {
+    filteredCountries() {
+      return this.countries.filter(country => {
+        const matchesRegion = this.selectedRegion ? country.region === this.selectedRegion : true;
+        const matchesSearch = this.searchQuery ? country.name.common.toLowerCase().includes(this.searchQuery.toLowerCase()) : true;
+        return matchesRegion && matchesSearch;
+      });
+    },
   },
   mounted() {
     this.fetchCountries();
