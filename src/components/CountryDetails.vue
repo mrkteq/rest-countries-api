@@ -64,19 +64,3 @@ export default {
   },
 };
 </script>
-
-<style>
-/* .country-flag {
-  width: 100px;
-  height: auto;
-}
-.country-details {
-  margin-top: 20px;
-}
-.country-details header {
-  margin-top: 10px;
-}
-.country-details .content {
-  margin-top: 10px;
-} */
-</style>

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <h1>Select a Country</h1> -->
     <select v-model="selectedCountryCode" @change="fetchCountryDetails">
       <option value="" disabled>Select a country</option>
       <option v-for="country in countries" :key="country.cca3" :value="country.cca3">

@@ -1,6 +1,7 @@
 <template>
    <div class="search-container">
     <input type="search" :value="searchQuery" placeholder="Search for a country" @input="updateSearchQuery">
+    <i class="fas fa-search"></i>
   </div>
   <div class="custom-select-container">
     <label for="filter-region">Filter by Region:</label>

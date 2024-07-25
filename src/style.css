@@ -32,17 +32,11 @@ ol[role='list'] {
 }
 
 :root {
-  /* Light Mode Text */
   --clr-black-800: hsl(200deg, 15%, 8%);
-  /* Dark Mode Background */
   --clr-black-500:  hsl(207deg, 26%, 17%);
-  /* Dark Mode Elements */
   --clr-black-300: hsl(209deg, 23%, 22%); 
-/* Light Mode Input */
   --clr-white-800: hsl(0deg 0% 52%);
-  /* Light Mode Background */
-  --clr-white-500: hsl(0deg 0% 90%);
-  /* Dark Mode Text & Light Mode Elements */
+  --clr-white-500: hsl(0deg 0% 95%);
   --clr-white-300: hsl(0deg 0% 100%);
 
   --ff-base: "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -56,13 +50,27 @@ ol[role='list'] {
   --fs-900: 1.5rem;
 }
 
+/* Light Theme */
+.light-theme {
+  --background-color: var(--clr-white-500);
+  --background-color-accent: var(--clr-white-300);
+  --text-color: (var--clr-white-800);
+}
+
+/* Dark Theme */
+.dark-theme {
+  --background-color: var(--clr-black-500);
+  --background-color-accent: var(--clr-black-300);
+  --text-color: var(--clr-white-300);
+}
+
 html {
   font-size: 16px; /* 1 rem = 16px */
 }
 
 body {
-  background-color: var(--clr-black-500);
-  color: var(--clr-white-300);
+  background-color: var(--background-color);
+  color: var(--text-color);
   font-family: var(--ff-base);
   font-size: var(--fs-300);
   font-weight: var(--fw-light);
@@ -71,7 +79,7 @@ body {
 .header {
   display: flex;
   justify-content: space-between;
-  background-color: var(--clr-black-300);
+  background-color: var(--background-color-accent);
   padding-inline-start: 20px;
   padding-inline-end: 20px;
   padding-block-end: 20px;
@@ -80,6 +88,7 @@ body {
 
 .page-title {
   font-size: var(--fs-400);
+  color: var(--text-color);
 }
 
 /* ================================
@@ -87,7 +96,7 @@ button
 ================================ */
 .theme-switch {
   background-color: transparent;
-  color: var(--clr-white-300);
+  color: var(--text-color);
   font: inherit;
   border: none;
 }
@@ -113,12 +122,12 @@ search field
 }
 
 .search-container input[type="search"] {
-  background-color: var(--clr-black-300);
+  background-color: var(--background-color-accent);
   border: none;
   padding: 1rem 1rem 1rem 2.5rem;
   border-radius: .1rem;
   font: inherit;
-  color: var(--clr-white-300);
+  color: var(--text-color);
   /* width: 90%; */
 }
 
@@ -127,7 +136,7 @@ search field
   top: 50%;
   left: 1rem;
   transform: translateY(-50%);
-  color: gray;
+  color: var(--text-color);
 }
 
 input:hover,
@@ -137,7 +146,7 @@ input:focus-visible {
 }
 
 input::placeholder {
-  color: var(--clr-white-300);
+  color: var(--text-color);
 }
 
 /* ================================
@@ -154,22 +163,22 @@ filter
 }
 
 .custom-select.filter-region {
-  background-color: var(--clr-black-300);
+  background-color: var(--background-color-accent);
   position: relative;
 }
 
 .custom-select.filter-region select {
   width: 100%;
   padding: 1rem;
-  color: var(--clr-white-300);
+  color: var(--text-color);
   border: none;
   appearance: none;
-  background-color: var(--clr-black-300);
+  background-color: var(--background-color-accent);
 }
 
 .custom-select.filter-region::after {
   content: '▿';
-  color: var(--clr-white-300);
+  color: var(--text-color);
   position: absolute;
   right: 1rem;
   top: 50%;
@@ -195,7 +204,7 @@ card
 .card {
   display: grid;
   grid-template-rows: 150px max-content 1fr;
-  background-color: var(--clr-black-300);
+  background-color: var(--background-color-accent);
   padding-block-end: 1.5rem;
 }
 
