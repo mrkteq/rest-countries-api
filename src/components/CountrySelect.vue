@@ -1,18 +1,16 @@
 <template>
-  <div>
+  <div ref="CountrySelect">
     <select v-model="selectedCountryCode" @change="fetchCountryDetails">
       <option value="" disabled>Select a country</option>
       <option v-for="country in countries" :key="country.cca3" :value="country.cca3">
         {{ country.name.common }}
       </option>
     </select>
-
     <div v-if="selectedCountry">
       <h2>{{ selectedCountry.name.common }}</h2>
       <p>Capital: {{ selectedCountry.capital }}</p>
       <p>Region: {{ selectedCountry.region }}</p>
       <p>Population: {{ selectedCountry.population }}</p>
-      <!-- Add more details as needed -->
     </div>
   </div>
 </template>
@@ -50,7 +48,3 @@ export default {
   },
 };
 </script>
-
-<style>
-/* Add your styles here */
-</style>

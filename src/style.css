@@ -33,7 +33,7 @@ ol[role='list'] {
 
 :root {
   --clr-black-800: hsl(200deg, 15%, 8%);
-  --clr-black-500:  hsl(207deg, 26%, 17%);
+  --clr-black-500: hsl(207deg, 26%, 17%);
   --clr-black-300: hsl(209deg, 23%, 22%); 
   --clr-white-800: hsl(0deg 0% 52%);
   --clr-white-500: hsl(0deg 0% 95%);
@@ -48,6 +48,8 @@ ol[role='list'] {
   --fs-300: .875rem;
   --fs-400: 1rem;
   --fs-900: 1.5rem;
+
+  --shopify-box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
 }
 
 /* Light Theme */
@@ -85,6 +87,7 @@ header
 	grid-template-areas: "title toggle";
   padding: 2rem;
   background-color: var(--background-color-accent);
+  box-shadow: var(--shopify-box-shadow);
 }
 
 .header-container .title {
@@ -121,23 +124,27 @@ search and filter
 	gap: 2rem;
 	grid-template-columns: 1fr;
 	grid-template-areas: "search" "filter";
-  margin-inline-start: 1rem;
-  margin-inline-end: 1rem;
-  margin-block-start: 2rem;
-  margin-block-end: 2rem;
+  margin-inline: 1rem;
+  margin-block: 2rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas: "search filter";
+  }
 }
 
 .forms-container .search {
 	grid-area: search;
 	align-self: center;
 	display: grid;
+  box-shadow: var(--shopify-box-shadow);
 }
 
 .forms-container input[type="search"] {
   background-color: var(--background-color-accent);
   border: none;
   padding: 1rem 1rem 1rem 2.5rem;
-  border-radius: .1rem;
+  border-radius: 4px;
   font: inherit;
   color: var(--text-color);
 }
@@ -169,8 +176,8 @@ input::placeholder {
 }
 
 .forms-container .filter-select {
-  background-color: var(--background-color-accent);
   position: relative;
+  box-shadow: var(--shopify-box-shadow);
 }
 
 .forms-container .filter-select select {
@@ -178,6 +185,7 @@ input::placeholder {
   padding: 1rem;
   color: var(--text-color);
   border: none;
+  border-radius: 4px;
   appearance: none;
   background-color: var(--background-color-accent);
 }
@@ -199,14 +207,18 @@ card
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   grid-gap: 2.5rem;
-  padding-inline-start: 1rem;
-  padding-inline-end: 1rem;
+  padding-inline: 1rem;
   margin-block-start: 2.5rem;
   margin-block-end: 0;
 }
 
 .card {
   background-color: var(--background-color-accent);
+  border-radius: 4px;
+  display: grid;
+  overflow: hidden;
+  padding-block-end: 2rem;
+  box-shadow: var(--shopify-box-shadow);
 }
 
 .card > a {
@@ -215,23 +227,77 @@ card
 
 .card-image {
   object-fit: cover;
-  width: auto;
-  height: 150px;
-  justify-self: center;
-  display: grid;
+  width: 100%;
+  height: 10rem;
 }
 
 .card-title {
-  margin-inline-start: 1rem;
-  margin-block-start: 1.5rem;
-  margin-block-end: 1.5rem;
+  margin-block: 1.5rem;
+  padding-inline: 1rem;
 }
 
 .card-content li {
   font-weight: var(--fw-extra-bold);
-  padding: .275rem 1rem;
+  padding-inline: 1rem;
 }
 
 .card-content li span {
   font-weight: var(--fw-light);
+}
+
+/* ================================
+country details
+================================ */
+.country-details {
+  display: grid;
+  justify-content: center;
+  margin-block-start: 2rem;
+  margin-inline: 2rem;
+}
+
+.country-details button {
+  padding: 1rem;
+  color: var(--text-color);
+  border: none;
+  appearance: none;
+  background-color: var(--background-color-accent);
+  box-shadow: var(--shopify-box-shadow);
+}
+
+.country-details button:hover {
+  background-color: var(--background-color-accent-hover);
+  cursor: pointer;
+}
+
+.country-details button:active {
+  background-color: var(--background-color-accent-active);
+}
+
+.country-details .card-container {
+  padding: 0;
+  display: grid;
+	grid-template-columns: 1fr;
+	justify-items: center;
+  margin-block-end: 4rem;
+}  
+
+.country-details .card {
+  box-shadow: var(--shopify-box-shadow);
+}  
+
+.country-details .card-image {
+  height: auto;
+}
+
+.country-details .card-title {
+
+}
+
+.country-details .card-content {
+
+}
+
+.border-countries {
+  padding: ;
+  padding-inline: 1rem;
 }

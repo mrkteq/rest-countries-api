@@ -39,7 +39,6 @@ export default {
     }
   },
   mounted() {
-    // Load the saved theme from localStorage
     const savedTheme = JSON.parse(localStorage.getItem('isDarkMode'));
     if (savedTheme !== null) {
       this.isDarkMode = savedTheme;

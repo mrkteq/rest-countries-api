@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="CountryList">
     <SearchFilter
       :searchQuery="searchQuery"
       :selectedRegion="selectedRegion"
@@ -14,9 +14,9 @@
         </router-link>
 				<h2 class="card-title">{{ country.name.common }}</h2>
 				<ul class="card-content" role="list">
-						<li>Population: <span>{{ country.population }}</span></li>
-						<li>Region: <span>{{ country.region }}</span></li>
-						<li>Capital: <span>{{ country.capital }}</span></li>
+          <li>Population: <span>{{ country.population || 'N/A' }}</span></li>
+          <li>Region: <span>{{ country.region || 'N/A' }}</span></li>
+          <li>Capital: <span>{{ country.capital?.[0] || 'N/A' }}</span></li>
 				</ul>
       </div>
     </div>
