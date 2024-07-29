@@ -25,7 +25,7 @@
             {{ border.name }}
           </button>
         </div>
-        <p v-else>No border countries</p>
+        <p v-else class="card-title">No border countries</p>
       </div>
     </div>
   </div>

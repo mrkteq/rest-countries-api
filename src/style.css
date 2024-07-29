@@ -49,7 +49,9 @@ ol[role='list'] {
   --fs-400: 1rem;
   --fs-900: 1.5rem;
 
-  --shopify-box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+  --custom-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --custom-border-radius: 8px;
+  --custom-spacing-sm: 0.8rem;
 }
 
 /* Light Theme */
@@ -85,9 +87,10 @@ header
   display: grid;
 	grid-template-columns: 1fr 1fr;
 	grid-template-areas: "title toggle";
-  padding: 2rem;
+  margin-inline: var(--custom-spacing-sm);
+  padding: var(--custom-spacing-sm);
   background-color: var(--background-color-accent);
-  box-shadow: var(--shopify-box-shadow);
+  box-shadow: var(--custom-box-shadow);
 }
 
 .header-container .title {
@@ -121,14 +124,14 @@ search and filter
 .forms-container {
   position: relative;
   display: grid;
-	gap: 2rem;
+	gap: var(--custom-spacing-sm);
 	grid-template-columns: 1fr;
 	grid-template-areas: "search" "filter";
-  margin-inline: 1rem;
-  margin-block: 2rem;
+  margin-inline: var(--custom-spacing-sm);
+  margin-block: var(--custom-spacing-sm);
 
   @media (min-width: 768px) {
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 4fr 1fr;
     grid-template-areas: "search filter";
   }
 }
@@ -137,14 +140,14 @@ search and filter
 	grid-area: search;
 	align-self: center;
 	display: grid;
-  box-shadow: var(--shopify-box-shadow);
+  box-shadow: var(--custom-box-shadow);
 }
 
 .forms-container input[type="search"] {
   background-color: var(--background-color-accent);
   border: none;
-  padding: 1rem 1rem 1rem 2.5rem;
-  border-radius: 4px;
+  padding: 0.8rem 0.8rem 0.8rem 2.5rem;
+  border-radius: var(--custom-border-radius);
   font: inherit;
   color: var(--text-color);
 }
@@ -161,8 +164,8 @@ input::placeholder {
 
 .fa-search {
   position: absolute;
-  left: 1rem;
-  transform: translateY(130%);
+  left: 0.8rem;
+  transform: translateY(110%);
   color: var(--text-color);
 }
 
@@ -177,15 +180,15 @@ input::placeholder {
 
 .forms-container .filter-select {
   position: relative;
-  box-shadow: var(--shopify-box-shadow);
+  box-shadow: var(--custom-box-shadow);
 }
 
 .forms-container .filter-select select {
   width: 100%;
-  padding: 1rem;
+  padding: 0.8rem;
   color: var(--text-color);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--custom-border-radius);
   appearance: none;
   background-color: var(--background-color-accent);
 }
@@ -193,8 +196,9 @@ input::placeholder {
 .forms-container .filter-select::after {
   content: '▿';
   color: var(--text-color);
+  font-size: var(--fs-900);
   position: absolute;
-  right: 1rem;
+  right: 0.8rem;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
@@ -203,56 +207,101 @@ input::placeholder {
 /* ================================
 card
 ================================ */
+
+/* General styling for the card container */
 .card-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  grid-gap: 2.5rem;
-  padding-inline: 1rem;
-  margin-block-start: 2.5rem;
-  margin-block-end: 0;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--custom-spacing-sm);
+  padding-inline: var(--custom-spacing-sm);
 }
 
+/* Styling for each card */
 .card {
-  background-color: var(--background-color-accent);
-  border-radius: 4px;
-  display: grid;
+  background-color: #fff;
+  border-radius: var(--custom-border-radius);
+  box-shadow: var(--custom-box-shadow);
   overflow: hidden;
-  padding-block-end: 2rem;
-  box-shadow: var(--shopify-box-shadow);
+  transition: transform 0.2s;
 }
 
-.card > a {
-  display: grid;
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* Styling for the card image wrapper */
+.card-image-wrapper {
+  display: inline flow-root list-item;
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  overflow: hidden;
+  background-color: #f0f0f0; /* Fallback color in case image fails to load */
 }
 
 .card-image {
-  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 10rem;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Styling for the card content */
+.card-content {
+  padding: 15px;
+  color: var(--text-color);
 }
 
 .card-title {
-  margin-block: 1.5rem;
-  padding-inline: 1rem;
+  font-size: 1.2em;
+  margin: 0 0 10px;
 }
 
-.card-content li {
-  font-weight: var(--fw-extra-bold);
-  padding-inline: 1rem;
+.card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.card-content li span {
-  font-weight: var(--fw-light);
+.card-list li {
+  margin-bottom: 8px;
+}
+
+.card-list span {
+  font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card-container {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-container {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    padding: 0;
+  }
+
+  .card {
+    margin: 0 auto;
+    width: 90%;
+  }
 }
 
 /* ================================
 country details
 ================================ */
 .country-details {
-  display: grid;
+  /* display: grid;
   justify-content: center;
   margin-block-start: 2rem;
-  margin-inline: 2rem;
+  margin-inline: 2rem; */
 }
 
 .country-details button {
@@ -261,7 +310,7 @@ country details
   border: none;
   appearance: none;
   background-color: var(--background-color-accent);
-  box-shadow: var(--shopify-box-shadow);
+  box-shadow: var(--custom-box-shadow);
 }
 
 .country-details button:hover {
@@ -274,19 +323,23 @@ country details
 }
 
 .country-details .card-container {
-  padding: 0;
+  /* padding: 0;
   display: grid;
 	grid-template-columns: 1fr;
 	justify-items: center;
-  margin-block-end: 4rem;
+  margin-block-end: 4rem; */
 }  
 
 .country-details .card {
-  box-shadow: var(--shopify-box-shadow);
+  /* box-shadow: var(--shopify-box-shadow);
+  grid-template-columns: 1fr;
+  @media(min-width: 500px) {
+    grid-template-columns: 1fr 1fr;
+  } */
 }  
 
 .country-details .card-image {
-  height: auto;
+  /* height: auto; */
 }
 
 .country-details .card-title {
@@ -298,6 +351,5 @@ country details
 }
 
 .border-countries {
-  padding: ;
   padding-inline: 1rem;
 }

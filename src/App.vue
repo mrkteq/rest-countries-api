@@ -1,6 +1,6 @@
 <template>
   <header class="header-container">
-    <h1 class="title">Where in the world?</h1>
+    <h1 class="title"><a href="/" class="website-link">Where in the world?</a></h1>
     <button @click="toggleTheme" class="toggle">
       <i :class="iconClass"></i> {{ buttonText }}
     </button>
