@@ -25,10 +25,10 @@ export default {
   },
   computed: {
     iconClass() {
-      return this.isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
+      return this.isDarkMode ? 'fas fa-moon' : 'fas fa-sun';
     },
     buttonText() {
-      return this.isDarkMode ? 'Light Mode' : 'Dark Mode';
+      return this.isDarkMode ? 'Dark Mode' : 'Light Mode';
     }
   },
   methods: {

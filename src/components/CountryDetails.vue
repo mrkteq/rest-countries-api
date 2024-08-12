@@ -1,31 +1,33 @@
 <template>
   <div ref="CountryDetails" v-if="country" class="country-details">
     <router-link to="/">
-      <button @click="closeDetails">
-        <i class="fa-solid fa-arrow-left"></i> Back to List
+      <button @click="closeDetails" class="button button-md">
+        <i class="fa-solid fa-arrow-left"></i> Back
       </button>
     </router-link>
-    <div class="card-container">
-      <div class="card">
-        <img :src="country.flags.svg" :alt="country.name.common" class="card-image">
-        <h2 class="card-title">{{ country.name.common }}</h2>
-        <ul class="card-content" role="list">
-          <li>Native Name: <span>{{ getNativeName() }}</span></li>
-          <li>Population: <span>{{ country.population || 'N/A' }}</span></li>
-          <li>Region: <span>{{ country.region || 'N/A' }}</span></li>
-          <li>Sub Region: <span>{{ country.subregion || 'N/A' }}</span></li>
-          <li>Capital: <span>{{ country.capital?.[0] || 'N/A' }}</span></li>
-          <li>Top Level Domain: <span>{{ country.tld?.[0] || 'N/A' }}</span></li>
-          <li>Currencies: <span>{{ getCurrencies() }}</span></li>
-          <li>Languages: <span>{{ getLanguages() }}</span></li>
-        </ul>
-        <h2 class="card-title">Border Countries:</h2>
-        <div v-if="borderCountries.length > 0" class="border-countries">
-          <button v-for="border in borderCountries" :key="border.code" @click="fetchCountryDetails(border.code)">
-            {{ border.name }}
-          </button>
+    <div class="detail-card-container">
+      <div class="detail-card">
+        <img :src="country.flags.svg" :alt="country.name.common" class="detail-card-image">
+        <div>
+          <h2 class="detail-card-title">{{ country.name.common }}</h2>
+          <ul class="detail-card-content" role="list">
+            <li>Native Name: <span>{{ getNativeName() }}</span></li>
+            <li>Population: <span>{{ country.population || 'N/A' }}</span></li>
+            <li>Region: <span>{{ country.region || 'N/A' }}</span></li>
+            <li>Sub Region: <span>{{ country.subregion || 'N/A' }}</span></li>
+            <li>Capital: <span>{{ country.capital?.[0] || 'N/A' }}</span></li>
+            <li>Top Level Domain: <span>{{ country.tld?.[0] || 'N/A' }}</span></li>
+            <li>Currencies: <span>{{ getCurrencies() }}</span></li>
+            <li>Languages: <span>{{ getLanguages() }}</span></li>
+          </ul>
+          <h3 class="inline-heading">Border Countries:</h3>
+          <div v-if="borderCountries.length > 0" class="border-countries">
+            <button v-for="border in borderCountries" :key="border.code" @click="fetchCountryDetails(border.code)" class="button button-sm">
+              {{ border.name }}
+            </button>
+          </div>
+          <p v-else class="detail-card-title">No border countries</p>
         </div>
-        <p v-else class="card-title">No border countries</p>
       </div>
     </div>
   </div>
