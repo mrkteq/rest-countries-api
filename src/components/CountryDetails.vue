@@ -68,7 +68,10 @@ export default {
       console.log(`Fetching country details for code: ${code}`);
 
       try {
-        const response = await axios.get(`https://restcountries.com/v3.1/alpha/${code}`);
+        // Specify fields to avoid API error and reduce payload
+        const response = await axios.get(
+          `https://restcountries.com/v3.1/alpha/${code}?fields=name,flags,population,region,subregion,capital,tld,currencies,languages,borders,cca3`
+        );
         this.country = response.data[0];
         this.loading = false;
         this.fetchBorderCountries();
@@ -85,8 +88,13 @@ export default {
       }
 
       try {
+        // Specify fields for border countries
         const responses = await Promise.all(
-          this.country.borders.map(borderCode => axios.get(`https://restcountries.com/v3.1/alpha/${borderCode}`))
+          this.country.borders.map(borderCode =>
+            axios.get(
+              `https://restcountries.com/v3.1/alpha/${borderCode}?fields=name,cca3`
+            )
+          )
         );
         this.borderCountries = responses.map(response => ({
           code: response.data[0].cca3,

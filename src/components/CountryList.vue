@@ -63,7 +63,7 @@ export default {
   },
   methods: {
     fetchCountries() {
-      axios.get('https://restcountries.com/v3.1/all')
+      axios.get('https://restcountries.com/v3.1/all?fields=name,flags,population,region,capital,cca3')
         .then(response => {
           this.countries = response.data;
         })
