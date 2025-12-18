@@ -2,7 +2,7 @@
 
 Search and filter country data with REST API integration, demonstrating async JavaScript patterns and responsive design.
 
-![Design preview for the REST Countries API with color theme switcher coding challenge](./design/desktop-preview.jpg)
+![Countries API](/Screenshot.png)
 
 **[Live Demo](https://api-for-countries.netlify.app/)** | **[Portfolio](https://marktucker-portfolio.netlify.app/)**
 
