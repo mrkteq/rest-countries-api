@@ -7,73 +7,109 @@
       @update:searchQuery="searchQuery = $event"
       @update:selectedRegion="selectedRegion = $event"
     />
-    <div class="card-container">
-      <div class="card" v-for="country in filteredCountries" :key="country.cca3">
+    
+    <div v-if="loading" class="loading-container">
+      <p>Loading countries...</p>
+    </div>
+    
+    <div v-else-if="error" class="error-container">
+      <p class="error-message">{{ error }}</p>
+      <button @click="fetchCountries" class="button button-md">Try Again</button>
+    </div>
+    
+    <div v-else-if="filteredCountries.length === 0" class="empty-container">
+      <p>No countries found matching your search criteria.</p>
+    </div>
+    
+    <div v-else class="card-container">
+      <article 
+        class="card" 
+        v-for="country in filteredCountries" 
+        :key="country.cca3"
+      >
         <router-link 
           :to="{ name: 'CountryDetails', params: { code: country.cca3 } }" 
-          @click="selectCountry(country)" 
           class="card-image-wrapper"
+          :aria-label="`View details for ${country.name.common}`"
         >
-          <img :src="country.flags.png" :alt="country.name.common" class="card-image">
+          <img 
+            :src="country.flags.png" 
+            :alt="`Flag of ${country.name.common}`" 
+            class="card-image"
+            loading="lazy"
+            decoding="async"
+            fetchpriority="low"
+          >
         </router-link>
         <div class="card-content">
           <h2 class="card-title">{{ country.name.common }}</h2>
           <ul class="card-list" role="list">
-            <li>Population: <span>{{ country.population || 'N/A' }}</span></li>
+            <li>Population: <span>{{ formatPopulation(country.population) }}</span></li>
             <li>Region: <span>{{ country.region || 'N/A' }}</span></li>
             <li>Capital: <span>{{ country.capital?.[0] || 'N/A' }}</span></li>
           </ul>
         </div>
-      </div>
+      </article>
     </div>
-    <CountryDetails v-if="selectedCountry" :initialCountry="selectedCountry" @close="selectedCountry = null" />
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import { ref, computed } from 'vue';
+import { getAllCountries } from '../services/api';
+import { formatPopulation } from '../utils/formatters';
 import SearchFilter from './SearchFilter.vue';
-import CountryDetails from './CountryDetails.vue';
 
 export default {
   components: {
     SearchFilter,
-    CountryDetails,
   },
-  data() {
-    return {
-      countries: [],
-      regions: ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania'],
-      searchQuery: '',
-      selectedRegion: '',
-      selectedCountry: null,
-    };
-  },
-  computed: {
-    filteredCountries() {
-      return this.countries.filter(country => {
-        const matchesRegion = this.selectedRegion ? country.region === this.selectedRegion : true;
-        const matchesSearch = this.searchQuery ? country.name.common.toLowerCase().includes(this.searchQuery.toLowerCase()) : true;
+  setup() {
+    const countries = ref([]);
+    const regions = ref(['Africa', 'Americas', 'Asia', 'Europe', 'Oceania']);
+    const searchQuery = ref('');
+    const selectedRegion = ref('');
+    const loading = ref(false);
+    const error = ref(null);
+
+    const filteredCountries = computed(() => {
+      return countries.value.filter(country => {
+        const matchesRegion = selectedRegion.value 
+          ? country.region === selectedRegion.value 
+          : true;
+        const matchesSearch = searchQuery.value 
+          ? country.name.common.toLowerCase().includes(searchQuery.value.toLowerCase()) 
+          : true;
         return matchesRegion && matchesSearch;
       });
-    },
-  },
-  mounted() {
-    this.fetchCountries();
-  },
-  methods: {
-    fetchCountries() {
-      axios.get('https://restcountries.com/v3.1/all?fields=name,flags,population,region,capital,cca3')
-        .then(response => {
-          this.countries = response.data;
-        })
-        .catch(error => {
-          console.error('Error fetching countries:', error);
-        });
-    },
-    selectCountry(country) {
-      this.selectedCountry = country;
-    },
+    });
+
+    const fetchCountries = async () => {
+      loading.value = true;
+      error.value = null;
+      try {
+        countries.value = await getAllCountries();
+      } catch (err) {
+        error.value = err.message || 'Failed to load countries. Please try again later.';
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    // Fetch on mount
+    fetchCountries();
+
+    return {
+      countries,
+      regions,
+      searchQuery,
+      selectedRegion,
+      loading,
+      error,
+      filteredCountries,
+      fetchCountries,
+      formatPopulation,
+    };
   },
 };
 </script>

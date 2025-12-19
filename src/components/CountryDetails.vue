@@ -1,18 +1,35 @@
 <template>
-  <div ref="CountryDetails" v-if="country" class="country-details">
+  <div ref="CountryDetails" class="country-details">
     <router-link to="/">
-      <button @click="closeDetails" class="button button-md">
-        <i class="fa-solid fa-arrow-left"></i> Back
+      <button @click="closeDetails" class="button button-md" aria-label="Go back to country list">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back
       </button>
     </router-link>
-    <div class="detail-card-container">
+    
+    <div v-if="loading" class="loading-container">
+      <p>Loading country details...</p>
+    </div>
+    
+    <div v-else-if="error" class="error-container">
+      <p class="error-message">{{ error }}</p>
+      <button @click="retryFetch" class="button button-md">Try Again</button>
+    </div>
+    
+    <div v-else-if="country" class="detail-card-container">
       <div class="detail-card">
-        <img :src="country.flags.svg" :alt="country.name.common" class="detail-card-image">
+        <img 
+          :src="country.flags.svg" 
+          :alt="`Flag of ${country.name.common}`" 
+          class="detail-card-image"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        >
         <div>
           <h2 class="detail-card-title">{{ country.name.common }}</h2>
           <ul class="detail-card-content" role="list">
             <li>Native Name: <span>{{ getNativeName() }}</span></li>
-            <li>Population: <span>{{ country.population || 'N/A' }}</span></li>
+            <li>Population: <span>{{ formatPopulation(country.population) }}</span></li>
             <li>Region: <span>{{ country.region || 'N/A' }}</span></li>
             <li>Sub Region: <span>{{ country.subregion || 'N/A' }}</span></li>
             <li>Capital: <span>{{ country.capital?.[0] || 'N/A' }}</span></li>
@@ -22,138 +39,137 @@
           </ul>
           <h3 class="inline-heading">Border Countries:</h3>
           <div v-if="borderCountries.length > 0" class="border-countries">
-            <button v-for="border in borderCountries" :key="border.code" @click="fetchCountryDetails(border.code)" class="button button-sm">
+            <router-link
+              v-for="border in borderCountries" 
+              :key="border.code" 
+              :to="{ name: 'CountryDetails', params: { code: border.code } }"
+              class="button button-sm"
+            >
               {{ border.name }}
-            </button>
+            </router-link>
           </div>
-          <p v-else class="detail-card-title">No border countries</p>
+          <p v-else class="no-borders">No border countries</p>
         </div>
       </div>
     </div>
   </div>
-  <div v-else>
-    <p>Loading...</p>
-  </div>
 </template>
 
 <script>
-import axios from 'axios';
+import { ref, watch, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { getCountryByCode, getCountriesByCodes } from '../services/api';
+import { formatPopulation } from '../utils/formatters';
 
 export default {
   props: {
-    // `code` is provided when this component is used via the router
     code: {
       type: String,
       required: false,
     },
-    // `initialCountry` is provided when the parent passes a country object directly
-    initialCountry: {
-      type: Object,
-      required: false,
-    },
   },
-  data() {
-    return {
-      country: this.initialCountry || null,
-      borderCountries: [],
-      loading: !!(this.code && !this.initialCountry),
-      error: null,
-    };
-  },
-  mounted() {
-    if (this.code) {
-      this.fetchCountryDetails(this.code);
-    }
-  },
-  watch: {
-    // When the route param `code` changes we need to fetch the new country
-    code(newCode, oldCode) {
-      if (newCode && newCode !== oldCode) {
-        this.loading = true;
-        this.fetchCountryDetails(newCode);
-      }
-    },
-    // If the parent passes a different country object directly, update local state
-    initialCountry(newCountry) {
-      this.country = newCountry;
-      if (newCountry) {
-        this.loading = false;
-        this.fetchBorderCountries();
-      }
-    }
-  },
-  methods: {
-    async fetchCountryDetails(code) {
+  setup(props) {
+    const route = useRoute();
+    const router = useRouter();
+    const country = ref(null);
+    const borderCountries = ref([]);
+    const loading = ref(false);
+    const error = ref(null);
+
+    const countryCode = computed(() => props.code || route.params.code);
+
+    const fetchCountryDetails = async (code) => {
       if (!code) {
-        this.error = 'No country code provided';
-        this.loading = false;
+        error.value = 'No country code provided';
+        loading.value = false;
         return;
       }
 
-      console.log(`Fetching country details for code: ${code}`);
+      loading.value = true;
+      error.value = null;
 
       try {
-        // Specify fields to avoid API error and reduce payload
-        const response = await axios.get(
-          `https://restcountries.com/v3.1/alpha/${code}?fields=name,flags,population,region,subregion,capital,tld,currencies,languages,borders,cca3`
-        );
-        // The REST Countries API may return an object or an array depending on endpoint
-        this.country = Array.isArray(response.data) ? response.data[0] : response.data;
-        this.loading = false;
-        this.fetchBorderCountries();
-      } catch (error) {
-        console.error('Error fetching country details:', error);
-        this.error = 'Failed to load country details';
-        this.loading = false;
+        country.value = await getCountryByCode(code);
+        await fetchBorderCountries();
+      } catch (err) {
+        error.value = err.message || 'Failed to load country details. Please try again later.';
+      } finally {
+        loading.value = false;
       }
-    },
-    async fetchBorderCountries() {
-      if (!this.country || !this.country.borders || this.country.borders.length === 0) {
-        this.borderCountries = [];
+    };
+
+    const fetchBorderCountries = async () => {
+      if (!country.value?.borders || country.value.borders.length === 0) {
+        borderCountries.value = [];
         return;
       }
 
       try {
-        // Specify fields for border countries
-        const responses = await Promise.all(
-          this.country.borders.map(borderCode =>
-            axios.get(
-              `https://restcountries.com/v3.1/alpha/${borderCode}?fields=name,cca3`
-            )
-          )
-        );
-        this.borderCountries = responses.map(response => {
-          const countryData = Array.isArray(response.data) ? response.data[0] : response.data;
-          return {
-            code: countryData.cca3,
-            name: countryData.name?.common || 'Unknown',
-          };
-        });
-      } catch (error) {
-        console.error('Error fetching border countries:', error);
+        borderCountries.value = await getCountriesByCodes(country.value.borders);
+      } catch (err) {
+        console.error('Error fetching border countries:', err);
+        borderCountries.value = [];
       }
-    },
-    getNativeName() {
-      if (!this.country || !this.country.name.nativeName) return 'N/A';
-      const nativeNameObj = this.country.name.nativeName;
+    };
+
+    const retryFetch = () => {
+      if (countryCode.value) {
+        fetchCountryDetails(countryCode.value);
+      }
+    };
+
+    const getNativeName = () => {
+      if (!country.value?.name?.nativeName) return 'N/A';
+      const nativeNameObj = country.value.name.nativeName;
       const firstLanguageKey = Object.keys(nativeNameObj)[0];
       return nativeNameObj[firstLanguageKey]?.common || 'N/A';
-    },
-    getCurrencies() {
-      if (!this.country || !this.country.currencies) return 'N/A';
-      const currencyKeys = Object.keys(this.country.currencies);
-      return currencyKeys.map(key => this.country.currencies[key].symbol).join(', ');
-    },
-    getLanguages() {
-      if (!this.country || !this.country.languages) return 'N/A';
-      return Object.values(this.country.languages).join(', ');
-    },
-    closeDetails() {
-      // Navigate back to the list route when the back button is clicked
-      if (this.$router) {
-        this.$router.push({ name: 'CountryList' });
-      }
+    };
+
+    const getCurrencies = () => {
+      if (!country.value?.currencies) return 'N/A';
+      const currencyKeys = Object.keys(country.value.currencies);
+      return currencyKeys
+        .map(key => {
+          const currency = country.value.currencies[key];
+          return currency.symbol ? `${currency.name} (${currency.symbol})` : currency.name;
+        })
+        .join(', ');
+    };
+
+    const getLanguages = () => {
+      if (!country.value?.languages) return 'N/A';
+      return Object.values(country.value.languages).join(', ');
+    };
+
+    const closeDetails = () => {
+      router.push({ name: 'CountryList' });
+    };
+
+    // Fetch on mount
+    if (countryCode.value) {
+      fetchCountryDetails(countryCode.value);
     }
+
+    // Watch for route changes
+    watch(() => route.params.code, (newCode) => {
+      if (newCode && newCode !== country.value?.cca3) {
+        fetchCountryDetails(newCode);
+      }
+    });
+
+    return {
+      country,
+      borderCountries,
+      loading,
+      error,
+      fetchCountryDetails,
+      retryFetch,
+      getNativeName,
+      getCurrencies,
+      getLanguages,
+      closeDetails,
+      formatPopulation,
+    };
   },
 };
 </script>
