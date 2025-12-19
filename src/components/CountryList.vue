@@ -8,20 +8,45 @@
       @update:selectedRegion="selectedRegion = $event"
     />
     
-    <div v-if="loading" class="loading-container">
-      <p>Loading countries...</p>
+    <div v-if="loading" class="card-container">
+      <article 
+        class="card skeleton-card" 
+        v-for="n in 12" 
+        :key="`skeleton-${n}`"
+      >
+        <div class="card-image-wrapper skeleton-image"></div>
+        <div class="card-content">
+          <div class="skeleton-title"></div>
+          <ul class="card-list">
+            <li><div class="skeleton-text"></div></li>
+            <li><div class="skeleton-text"></div></li>
+            <li><div class="skeleton-text"></div></li>
+          </ul>
+        </div>
+      </article>
     </div>
     
     <div v-else-if="error" class="error-container">
+      <div class="error-icon">
+        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      </div>
       <p class="error-message">{{ error }}</p>
       <button @click="fetchCountries" class="button button-md">Try Again</button>
     </div>
     
     <div v-else-if="filteredCountries.length === 0" class="empty-container">
-      <p>No countries found matching your search criteria.</p>
+      <div class="empty-icon">
+        <i class="fa-solid fa-globe" aria-hidden="true"></i>
+      </div>
+      <h2>No countries found</h2>
+      <p>Try adjusting your search or filter criteria.</p>
     </div>
     
-    <div v-else class="card-container">
+    <div v-else>
+      <div class="results-info">
+        <p>{{ filteredCountries.length }} {{ filteredCountries.length === 1 ? 'country' : 'countries' }} found</p>
+      </div>
+      <div class="card-container">
       <article 
         class="card" 
         v-for="country in filteredCountries" 
@@ -50,6 +75,7 @@
           </ul>
         </div>
       </article>
+      </div>
     </div>
   </div>
 </template>

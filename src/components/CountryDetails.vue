@@ -7,10 +7,17 @@
     </router-link>
     
     <div v-if="loading" class="loading-container">
+      <div class="loading-spinner">
+        <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+      </div>
       <p>Loading country details...</p>
     </div>
     
     <div v-else-if="error" class="error-container">
+      <div class="error-icon">
+        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      </div>
+      <h2>Oops! Something went wrong</h2>
       <p class="error-message">{{ error }}</p>
       <button @click="retryFetch" class="button button-md">Try Again</button>
     </div>
