@@ -26,7 +26,7 @@
         </div>
       </div>
     </div>
-    <CountryDetails v-if="selectedCountry" :country="selectedCountry" @close="selectedCountry = null" />
+    <CountryDetails v-if="selectedCountry" :initialCountry="selectedCountry" @close="selectedCountry = null" />
   </div>
 </template>
 

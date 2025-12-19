@@ -41,21 +41,46 @@ import axios from 'axios';
 
 export default {
   props: {
+    // `code` is provided when this component is used via the router
     code: {
       type: String,
-      required: true,
+      required: false,
+    },
+    // `initialCountry` is provided when the parent passes a country object directly
+    initialCountry: {
+      type: Object,
+      required: false,
     },
   },
   data() {
     return {
-      country: null,
+      country: this.initialCountry || null,
       borderCountries: [],
-      loading: true,
+      loading: !!(this.code && !this.initialCountry),
       error: null,
     };
   },
   mounted() {
-    this.fetchCountryDetails(this.code);
+    if (this.code) {
+      this.fetchCountryDetails(this.code);
+    }
+  },
+  watch: {
+    // When the route param `code` changes we need to fetch the new country
+    code(newCode, oldCode) {
+      if (newCode && newCode !== oldCode) {
+        this.loading = true;
+        this.fetchCountryDetails(newCode);
+      }
+    },
+    // If the parent passes a different country object directly, update local state
+    initialCountry(newCountry) {
+      this.country = newCountry;
+      if (newCountry) {
+        this.loading = false;
+        this.fetchBorderCountries();
+      }
+    }
   },
   methods: {
     async fetchCountryDetails(code) {
@@ -72,7 +97,8 @@ export default {
         const response = await axios.get(
           `https://restcountries.com/v3.1/alpha/${code}?fields=name,flags,population,region,subregion,capital,tld,currencies,languages,borders,cca3`
         );
-        this.country = response.data[0];
+        // The REST Countries API may return an object or an array depending on endpoint
+        this.country = Array.isArray(response.data) ? response.data[0] : response.data;
         this.loading = false;
         this.fetchBorderCountries();
       } catch (error) {
@@ -82,7 +108,7 @@ export default {
       }
     },
     async fetchBorderCountries() {
-      if (!this.country.borders || this.country.borders.length === 0) {
+      if (!this.country || !this.country.borders || this.country.borders.length === 0) {
         this.borderCountries = [];
         return;
       }
@@ -96,10 +122,13 @@ export default {
             )
           )
         );
-        this.borderCountries = responses.map(response => ({
-          code: response.data[0].cca3,
-          name: response.data[0].name.common,
-        }));
+        this.borderCountries = responses.map(response => {
+          const countryData = Array.isArray(response.data) ? response.data[0] : response.data;
+          return {
+            code: countryData.cca3,
+            name: countryData.name?.common || 'Unknown',
+          };
+        });
       } catch (error) {
         console.error('Error fetching border countries:', error);
       }
@@ -120,7 +149,10 @@ export default {
       return Object.values(this.country.languages).join(', ');
     },
     closeDetails() {
-      // Implement the logic to handle the back button click if needed
+      // Navigate back to the list route when the back button is clicked
+      if (this.$router) {
+        this.$router.push({ name: 'CountryList' });
+      }
     }
   },
 };
